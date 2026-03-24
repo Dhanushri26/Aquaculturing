@@ -1,46 +1,38 @@
 import pandas as pd
 import numpy as np
 
-# Number of samples
-n_samples = 800
+def generate_synthetic_data(n_samples=1000):
+    data = []
 
-data = []
+    for _ in range(n_samples):
+        temp = np.random.uniform(20, 35)
 
-for _ in range(n_samples):
-    # Temperature (20–35°C)
-    temp = np.random.uniform(20, 35)
+        # DO inversely related to temperature
+        do = 10 - (temp - 20) * 0.3 + np.random.normal(0, 0.5)
+        do = max(2, min(do, 10))
 
-    # Dissolved Oxygen (inverse relation with temperature + noise)
-    do = 10 - (temp - 20) * 0.3 + np.random.normal(0, 0.5)
-    do = max(2, min(do, 10))  # clamp between 2–10
+        ph = np.random.uniform(6.0, 9.0)
+        ammonia = np.random.uniform(0.01, 1.5)
 
-    # pH (6–9)
-    ph = np.random.uniform(6.0, 9.0)
+        # Improved rule-based labeling (with interactions)
+        if (do < 4 and temp > 28) or (ammonia > 1.2 and ph > 8):
+            risk = "High"
+        elif (4 <= do < 6) or (0.5 < ammonia <= 1.2):
+            risk = "Medium"
+        else:
+            risk = "Low"
 
-    # Ammonia (0.01–1.5 mg/L)
-    ammonia = np.random.uniform(0.01, 1.5)
+        data.append([temp, do, ph, ammonia, risk])
 
-    # -------- RULE-BASED LABELING --------
-    if do < 4 or ammonia > 1.0:
-        risk = "High"
-    elif (4 <= do < 6) or (0.5 < ammonia <= 1.0):
-        risk = "Medium"
-    else:
-        risk = "Low"
+    df = pd.DataFrame(data, columns=[
+        "temperature", "dissolved_oxygen", "ph", "ammonia", "risk"
+    ])
 
-    data.append([temp, do, ph, ammonia, risk])
+    return df
 
-# Create DataFrame
-df = pd.DataFrame(data, columns=[
-    "temperature", "dissolved_oxygen", "pH", "ammonia", "risk"
-])
 
-# Save dataset
-df.to_csv("aquaculture_data.csv", index=False)
+if __name__ == "__main__":
+    df = generate_synthetic_data()
+    df.to_csv("data/aquaculture_data.csv", index=False)
+    print("Synthetic data generated and saved!")
 
-# Show sample
-print(df.head())
-
-# Check class distribution
-print("\nClass Distribution:")
-print(df["risk"].value_counts())

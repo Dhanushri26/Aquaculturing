@@ -1,39 +1,56 @@
+import numpy as np
 import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder
-from sklearn.metrics import accuracy_score, classification_report
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.linear_model import LogisticRegression
+import joblib
+import time
 
-# Load dataset
-df = pd.read_csv("aquaculture_data.csv")
+# Load model
+model = joblib.load("models/model.pkl")
+le = joblib.load("models/label_encoder.pkl")
 
-# Features and target
-X = df[["temperature", "dissolved_oxygen", "pH", "ammonia"]]
-y = df["risk"]
+def generate_data():
+    temp = np.random.uniform(20, 35)
+    do = 10 - (temp - 20)*0.3 + np.random.normal(0, 0.5)
+    ph = np.random.uniform(6, 9)
+    ammonia = np.random.uniform(0.01, 1.5)
 
-# Encode labels (Low=0, Medium=1, High=2)
-le = LabelEncoder()
-y = le.fit_transform(y)
+    return temp, do, ph, ammonia
 
-# Train-test split
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42
-)
+def get_suggestion(risk):
+    if risk == "High":
+        return "🚨 Immediate action: Increase aeration, reduce feeding"
+    elif risk == "Medium":
+        return "⚠️ Monitor closely and adjust conditions"
+    else:
+        return "✅ Conditions stable"
 
-# Models
-models = {
-    "Logistic Regression": LogisticRegression(max_iter=200),
-    "Decision Tree": DecisionTreeClassifier(),
-    "Random Forest": RandomForestClassifier()
-}
+def explain_prediction(sample_df):
+    importances = model.feature_importances_
+    features = sample_df.columns
 
-# Train & evaluate
-for name, model in models.items():
-    model.fit(X_train, y_train)
-    preds = model.predict(X_test)
+    importance_dict = dict(zip(features, importances))
+    sorted_features = sorted(importance_dict.items(), key=lambda x: x[1], reverse=True)
 
-    print(f"\n{name}")
-    print("Accuracy:", accuracy_score(y_test, preds))
-    print(classification_report(y_test, preds))
+    return sorted_features[:2]
+
+while True:
+    temp, do, ph, ammonia = generate_data()
+
+    sample = pd.DataFrame([{
+        "temperature": temp,
+        "dissolved_oxygen": do,
+        "ph": ph,
+        "ammonia": ammonia
+    }])
+
+    pred = model.predict(sample)
+    risk = le.inverse_transform(pred)[0]
+
+    explanation = explain_prediction(sample)
+
+    print("\n--- Real-Time Aquaculture Monitor ---")
+    print(f"Temp: {temp:.2f}°C | DO: {do:.2f} | pH: {ph:.2f} | NH3: {ammonia:.2f}")
+    print(f"Risk Level: {risk}")
+    print(get_suggestion(risk))
+    print(f"Top Factors: {explanation}")
+
+    time.sleep(2)

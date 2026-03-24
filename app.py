@@ -8,15 +8,18 @@ app = Flask(__name__)
 # Load the trained model and label encoder
 MODEL_PATH = os.path.join(os.path.dirname(__file__), 'models', 'model.pkl')
 ENCODER_PATH = os.path.join(os.path.dirname(__file__), 'models', 'label_encoder.pkl')
+SCALER_PATH = os.path.join(os.path.dirname(__file__), 'models', 'scaler.pkl')
 
 try:
     model = joblib.load(MODEL_PATH)
     label_encoder = joblib.load(ENCODER_PATH)
+    scaler = joblib.load(SCALER_PATH)
     print("Model and Label Encoder loaded successfully.")
 except Exception as e:
     print(f"Error loading model/encoder: {e}")
     model = None
     label_encoder = None
+    scaler = None
 
 @app.route('/')
 def home():
@@ -45,7 +48,8 @@ def predict():
         }])
         
         # Predict
-        prediction = model.predict(input_data)
+        input_scaled = scaler.transform(input_data)
+        prediction = model.predict(input_scaled)
         predicted_label = label_encoder.inverse_transform(prediction)[0]
         
         return jsonify({
