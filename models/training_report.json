@@ -1,0 +1,225 @@
+{
+  "generated_at_utc": "2026-03-24T06:22:08.123510+00:00",
+  "selected_model": "RandomForest",
+  "feature_columns": [
+    "temperature",
+    "dissolved_oxygen",
+    "ph",
+    "ammonia"
+  ],
+  "label_classes": [
+    "High",
+    "Low",
+    "Medium"
+  ],
+  "dataset_summary": {
+    "synthetic_rows": 4200,
+    "real_rows_raw": 4300,
+    "real_rows_cleaned": 3950,
+    "merged_class_counts_before_balancing": {
+      "High": 1646,
+      "Low": 3120,
+      "Medium": 3384
+    },
+    "balanced_class_counts": {
+      "High": 3384,
+      "Low": 3384,
+      "Medium": 3384
+    },
+    "real_data_cleaning": {
+      "rows_before_filtering": 4300,
+      "rows_after_filtering": 3950,
+      "class_counts_after_filtering": {
+        "High": 1375,
+        "Low": 1373,
+        "Medium": 1202
+      },
+      "physical_limits": [
+        {
+          "feature": "temperature",
+          "min_allowed": 0.0,
+          "max_allowed": 40.0,
+          "rows_removed": 0
+        },
+        {
+          "feature": "dissolved_oxygen",
+          "min_allowed": 0.0,
+          "max_allowed": 20.0,
+          "rows_removed": 0
+        },
+        {
+          "feature": "ph",
+          "min_allowed": 0.0,
+          "max_allowed": 14.0,
+          "rows_removed": 16
+        },
+        {
+          "feature": "ammonia",
+          "min_allowed": 0.0,
+          "max_allowed": 5.0,
+          "rows_removed": 0
+        }
+      ],
+      "filters": [
+        {
+          "feature": "temperature",
+          "lower_quantile": 4.8957,
+          "upper_quantile": 34.7697,
+          "rows_removed": 86
+        },
+        {
+          "feature": "dissolved_oxygen",
+          "lower_quantile": 1.2508,
+          "upper_quantile": 11.4345,
+          "rows_removed": 82
+        },
+        {
+          "feature": "ph",
+          "lower_quantile": 3.5895,
+          "upper_quantile": 10.4327,
+          "rows_removed": 84
+        },
+        {
+          "feature": "ammonia",
+          "lower_quantile": 0.0005,
+          "upper_quantile": 0.6863,
+          "rows_removed": 82
+        }
+      ]
+    },
+    "feature_summary": {
+      "temperature": {
+        "min": 4.9674,
+        "max": 34.9992,
+        "mean": 26.0182,
+        "p01": 15.3912,
+        "p99": 34.7322
+      },
+      "dissolved_oxygen": {
+        "min": 1.2508,
+        "max": 11.4345,
+        "mean": 6.2186,
+        "p01": 3.0506,
+        "p99": 10.0
+      },
+      "ph": {
+        "min": 3.6586,
+        "max": 10.3841,
+        "mean": 7.6439,
+        "p01": 6.0159,
+        "p99": 9.4623
+      },
+      "ammonia": {
+        "min": 0.0005,
+        "max": 1.4993,
+        "mean": 0.3749,
+        "p01": 0.0016,
+        "p99": 1.4801
+      }
+    }
+  },
+  "split_summary": {
+    "train_rows": 7106,
+    "validation_rows": 1523,
+    "test_rows": 1523
+  },
+  "model_ranking": [
+    {
+      "model": "RandomForest",
+      "validation_accuracy": 0.9468,
+      "validation_macro_f1": 0.9458,
+      "validation_weighted_f1": 0.9458
+    },
+    {
+      "model": "GradientBoosting",
+      "validation_accuracy": 0.9402,
+      "validation_macro_f1": 0.9389,
+      "validation_weighted_f1": 0.9389
+    },
+    {
+      "model": "ExtraTrees",
+      "validation_accuracy": 0.9304,
+      "validation_macro_f1": 0.9296,
+      "validation_weighted_f1": 0.9295
+    },
+    {
+      "model": "LogisticRegression",
+      "validation_accuracy": 0.6612,
+      "validation_macro_f1": 0.653,
+      "validation_weighted_f1": 0.6529
+    }
+  ],
+  "test_metrics": {
+    "accuracy": 0.9508,
+    "macro_f1": 0.9498,
+    "weighted_f1": 0.9498,
+    "classification_report": {
+      "High": {
+        "precision": 0.9407407407407408,
+        "recall": 1.0,
+        "f1-score": 0.9694656488549618,
+        "support": 508.0
+      },
+      "Low": {
+        "precision": 0.9296296296296296,
+        "recall": 0.9901380670611439,
+        "f1-score": 0.958930276981853,
+        "support": 507.0
+      },
+      "Medium": {
+        "precision": 0.9887133182844243,
+        "recall": 0.8622047244094488,
+        "f1-score": 0.9211356466876972,
+        "support": 508.0
+      },
+      "accuracy": 0.9507550886408405,
+      "macro avg": {
+        "precision": 0.9530278962182649,
+        "recall": 0.9507809304901976,
+        "f1-score": 0.9498438575081707,
+        "support": 1523.0
+      },
+      "weighted avg": {
+        "precision": 0.953043259492453,
+        "recall": 0.9507550886408405,
+        "f1-score": 0.9498378913758833,
+        "support": 1523.0
+      }
+    },
+    "confusion_matrix": [
+      [
+        508,
+        0,
+        0
+      ],
+      [
+        0,
+        502,
+        5
+      ],
+      [
+        32,
+        38,
+        438
+      ]
+    ]
+  },
+  "feature_importance": [
+    {
+      "feature": "ammonia",
+      "importance": 0.5203
+    },
+    {
+      "feature": "dissolved_oxygen",
+      "importance": 0.2624
+    },
+    {
+      "feature": "ph",
+      "importance": 0.1424
+    },
+    {
+      "feature": "temperature",
+      "importance": 0.0749
+    }
+  ]
+}

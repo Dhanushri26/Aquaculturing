@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <!-- Phosphor icons for beautiful icons -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 <body>
@@ -35,28 +34,28 @@
                             <label for="temperature">
                                 <i class="ph ph-thermometer"></i> Temperature (°C)
                             </label>
-                            <input type="number" step="0.01" id="temperature" name="temperature" placeholder="e.g. 26.5" required>
+                            <input type="number" min="0" max="40" step="0.01" id="temperature" name="temperature" placeholder="e.g. 26.5" required>
                         </div>
 
                         <div class="input-group">
                             <label for="dissolved_oxygen">
                                 <i class="ph ph-wind"></i> Dissolved Oxygen (mg/L)
                             </label>
-                            <input type="number" step="0.01" id="dissolved_oxygen" name="dissolved_oxygen" placeholder="e.g. 6.8" required>
+                            <input type="number" min="0" max="20" step="0.01" id="dissolved_oxygen" name="dissolved_oxygen" placeholder="e.g. 6.8" required>
                         </div>
 
                         <div class="input-group">
                             <label for="ph">
                                 <i class="ph ph-flask"></i> pH Level
                             </label>
-                            <input type="number" step="0.01" id="ph" name="ph" placeholder="e.g. 7.4" required>
+                            <input type="number" min="0" max="14" step="0.01" id="ph" name="ph" placeholder="e.g. 7.4" required>
                         </div>
 
                         <div class="input-group">
                             <label for="ammonia">
                                 <i class="ph ph-warning-circle"></i> Ammonia (mg/L)
                             </label>
-                            <input type="number" step="0.01" id="ammonia" name="ammonia" placeholder="e.g. 0.05" required>
+                            <input type="number" min="0" max="5" step="0.01" id="ammonia" name="ammonia" placeholder="e.g. 0.05" required>
                         </div>
                     </div>
 
@@ -67,9 +66,7 @@
                     </button>
                 </form>
 
-                <div class="result-container" id="result-container">
-                    <!-- Result will be injected here via JS -->
-                </div>
+                <div class="result-container" id="result-container"></div>
             </div>
         </div>
     </main>

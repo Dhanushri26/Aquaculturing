@@ -1,196 +1,177 @@
-# 🌊 Real-Time Aquaculture Risk Prediction System
+# Aquaculture Risk Prediction System
 
-## 📌 Overview
+This project predicts aquaculture water-quality risk from four inputs:
 
-This project is an AI-driven system designed to predict fish health risk in aquaculture environments using water quality parameters. It simulates real-time sensor data and applies machine learning to classify risk levels and provide actionable recommendations.
+- temperature
+- dissolved oxygen
+- pH
+- ammonia
 
-The system is built with a focus on **practical deployment**, **lightweight models**, and **interpretability**, making it suitable for resource-constrained environments.
+It combines synthetic sensor-style data with a cleaned real dataset, compares multiple machine-learning models, saves the best one, and serves predictions through a Flask app.
 
----
+## What Changed
 
-## 🚀 Key Features
+The backend training flow is now consistent and reproducible:
 
-* 📡 Real-time simulation of environmental data (temperature, dissolved oxygen, pH, ammonia)
-* 🤖 Machine learning-based risk classification (Low / Medium / High)
-* 🔁 Hybrid dataset approach (synthetic + real-world water quality data)
-* 📊 Model comparison (Logistic Regression, Decision Tree, Random Forest)
-* 🧠 Explainable predictions using feature importance
-* ⚠️ Decision support system with actionable recommendations
-* ⚡ Designed for edge deployment scenarios
+- one shared training pipeline
+- stratified train/validation/test splits
+- automatic model comparison
+- saved scaler, label encoder, and model artifacts
+- saved `models/training_report.json` with metrics and dataset details
+- API responses that include confidence and top feature drivers
 
----
+## Current Model Result
 
-## 🧠 Problem Statement
+The latest verified training run selected `RandomForest` as the best model.
 
-Aquaculture systems are highly sensitive to environmental changes such as oxygen depletion, temperature rise, and ammonia accumulation. These changes often go unnoticed until damage occurs.
+- Validation macro F1: `0.9458`
+- Validation accuracy: `0.9468`
+- Test accuracy: `0.9508`
+- Test macro F1: `0.9498`
 
-This project addresses:
+## Project Structure
 
-> **Early detection of fish mortality risk using data-driven insights**
-
----
-
-## ⚙️ System Architecture
-
-```
-[Simulated / Real Data]
-        ↓
-[Data Preprocessing]
-        ↓
-[ML Model (Random Forest)]
-        ↓
-[Risk Prediction]
-        ↓
-[Explanation Layer]
-        ↓
-[Decision Support]
-```
-
----
-
-## 📂 Project Structure
-
-```
-aquaculture-ai/
-│
-├── data/
-│   ├── aquaculture_data.csv      # Synthetic dataset
-│   └── WQD.csv                  # Real-world dataset
-│
-├── models/
-│   ├── model.pkl
-│   └── label_encoder.pkl
-│
-├── src/
-│   ├── data_generation.py       # Synthetic data creation
-│   ├── train_model.py           # Full training pipeline
-│   ├── model_selection.py       # Model comparison (optional)
-│   └── predict.py               # Real-time prediction system
-│
-├── README.md
-└── requirements.txt
+```text
+Aquaculturing/
+|-- app.py
+|-- data/
+|   |-- aquaculture_data.csv
+|   `-- WQD.csv
+|-- models/
+|   |-- label_encoder.pkl
+|   |-- model.pkl
+|   |-- scaler.pkl
+|   `-- training_report.json
+|-- src/
+|   |-- data_generation.py
+|   |-- model_selection.py
+|   |-- predict.py
+|   |-- test.py
+|   |-- train_model.py
+|   `-- training_pipeline.py
+|-- static/
+|-- templates/
+`-- requirements.txt
 ```
 
----
+## Training Pipeline
 
-## 🧪 Dataset Strategy
+The main backend logic lives in `src/training_pipeline.py`.
 
-This project uses a **hybrid dataset approach**:
+1. Load synthetic data from `data/aquaculture_data.csv`
+2. Load real data from `data/WQD.csv`
+3. Regenerate the synthetic dataset on every training run to prevent stale or corrupted synthetic samples
+4. Rename raw columns and normalize temperature units
+5. Remove values outside physical bounds, then trim extreme outliers with 1st and 99th percentile bounds
+6. Keep the four prediction features and map labels to `High`, `Low`, and `Medium`
+7. Merge synthetic and real datasets
+8. Rebalance all classes to the same size
+9. Split the data into train, validation, and test sets
+10. Compare these models:
+   - Logistic Regression
+   - Random Forest
+   - Extra Trees
+   - Gradient Boosting
+11. Select the best model by validation macro F1
+12. Refit the winning model on train plus validation data
+13. Save artifacts and a detailed JSON report
 
-### 🔹 Synthetic Data
+## Files To Run
 
-* Generated using domain-inspired rules
-* Ensures controlled learning patterns
-
-### 🔹 Real Dataset (WQD)
-
-* Introduces real-world variability and noise
-* Improves generalization
-
-### 🔹 Why Combine Both?
-
-> Synthetic data provides structure, while real data adds realism and variability.
-
----
-
-## 🤖 Model Selection
-
-Models evaluated:
-
-* Logistic Regression
-* Decision Tree
-* Random Forest ✅ (Selected)
-
-### ✔ Why Random Forest?
-
-* Handles non-linear relationships
-* Robust to noise
-* Reduces overfitting compared to single trees
-* Performs well on structured/tabular data
-
----
-
-## 📊 Features Used
-
-* Temperature
-* Dissolved Oxygen
-* pH
-* Ammonia
-
-These features were selected based on their **direct impact on fish survival and water quality**.
-
----
-
-## ⚡ Real-Time Prediction
-
-The system simulates streaming data and continuously predicts risk:
-
-```
-Temp: 24.17°C | DO: 8.67 | pH: 8.42 | NH3: 1.39  
-Risk Level: High  
-🚨 Immediate action: Increase aeration, reduce feeding  
-```
-
----
-
-## 🧠 Key Learnings
-
-* Importance of data preprocessing and cleaning
-* Trade-offs between rule-based systems and ML models
-* Handling synthetic vs real-world data
-* Model overfitting and generalization
-* Designing systems for edge deployment
-
----
-
-## ⚠️ Limitations
-
-* Uses partially synthetic data
-* No real sensor integration
-* Simplified environmental modeling
-
----
-
-## 🔮 Future Improvements
-
-* Integration with IoT sensors for real-time data
-* Time-series modeling (LSTM / forecasting)
-* Web dashboard for monitoring
-* Cloud deployment for scalability
-* Advanced anomaly detection
-
----
-
-## 🛠️ Installation
-
-```bash
-pip install -r requirements.txt
-```
-
----
-
-## ▶️ Usage
-
-### Train Model
+Train and save the best model:
 
 ```bash
 python src/train_model.py
 ```
 
-### Run Real-Time Prediction
+Compare candidate models without overwriting saved artifacts:
+
+```bash
+python src/model_selection.py
+```
+
+Run the realtime terminal predictor:
 
 ```bash
 python src/predict.py
 ```
 
----
+Run the Flask web app:
 
-## 🎯 Conclusion
+```bash
+python app.py
+```
 
-This project demonstrates how AI can be applied to real-world aquaculture problems by combining domain knowledge, data engineering, and machine learning to build a practical, scalable system.
+Run a quick backend smoke test:
 
----
+```bash
+python src/test.py
+```
 
-## 📌 Author
+## API
 
-**Dhanu Shri V**
+### `POST /predict`
+
+Request body:
+
+```json
+{
+  "temperature": 28.0,
+  "dissolved_oxygen": 5.4,
+  "ph": 7.8,
+  "ammonia": 0.22
+}
+```
+
+Response body:
+
+```json
+{
+  "success": true,
+  "prediction": "Medium",
+  "confidence": 0.9896,
+  "probabilities": {
+    "High": 0.0,
+    "Low": 0.0104,
+    "Medium": 0.9896
+  },
+  "suggestion": "Conditions need attention. Monitor dissolved oxygen, temperature, and ammonia closely.",
+  "warnings": [],
+  "top_factors": [
+    {
+      "feature": "ammonia",
+      "importance": 0.5203
+    },
+    {
+      "feature": "dissolved_oxygen",
+      "importance": 0.2624
+    }
+  ],
+  "selected_model": "RandomForest"
+}
+```
+
+### `GET /model-info`
+
+Returns the saved contents of `models/training_report.json`, including:
+
+- dataset counts
+- filtering statistics
+- model ranking
+- confusion matrix
+- class metrics
+- feature importance
+
+## Notes
+
+- The project now uses the root `models/` directory as the single source of truth for artifacts.
+- `src/models/` has been removed to avoid stale model drift.
+- The confidence score comes from the selected model's predicted class probabilities.
+- `data/aquaculture_data.csv` is regenerated during training so the stored synthetic data stays aligned with the generator code.
+
+## Next Good Improvements
+
+- add unit tests around preprocessing and API validation
+- add input range validation in the web form
+- persist experiment history instead of only the latest report
+- add SHAP or permutation importance for richer explanations
