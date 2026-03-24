@@ -24,10 +24,10 @@ df.columns = [
     "phosphorus","h2s","plankton","water_quality"
 ]
 
-# ----------------------------
-# 4. Convert Temperature (F → C)
-# ----------------------------
-df["temperature"] = (df["temperature"] - 32) * 5/9
+df["temperature"] = df["temperature"].apply(lambda x: (x - 32) * 5/9 if x > 40 else x)
+df["temperature"] = df["temperature"].clip(lower=20, upper=35)
+df["dissolved_oxygen"] = df["dissolved_oxygen"].clip(lower=2.0)
+df["ammonia"] = df["ammonia"].clip(lower=0.0)
 
 # ----------------------------
 # 5. Remove extreme outliers (quantile)

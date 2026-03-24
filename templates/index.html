@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaCast | Water Quality Risk Predictor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Phosphor icons for beautiful icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body>
+    <div class="background-animation">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <main class="container">
+        <div class="glass-panel main-panel">
+            <header class="header">
+                <div class="logo">
+                    <i class="ph-fill ph-drop"></i>
+                    <h1>AquaCast</h1>
+                </div>
+                <p class="subtitle">Intelligent Water Quality Risk Prediction for Aquaculture</p>
+            </header>
+
+            <div class="content">
+                <form id="prediction-form" class="prediction-form">
+                    <div class="grid-layout">
+                        <div class="input-group">
+                            <label for="temperature">
+                                <i class="ph ph-thermometer"></i> Temperature (°C)
+                            </label>
+                            <input type="number" step="0.01" id="temperature" name="temperature" placeholder="e.g. 26.5" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="dissolved_oxygen">
+                                <i class="ph ph-wind"></i> Dissolved Oxygen (mg/L)
+                            </label>
+                            <input type="number" step="0.01" id="dissolved_oxygen" name="dissolved_oxygen" placeholder="e.g. 6.8" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="ph">
+                                <i class="ph ph-flask"></i> pH Level
+                            </label>
+                            <input type="number" step="0.01" id="ph" name="ph" placeholder="e.g. 7.4" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="ammonia">
+                                <i class="ph ph-warning-circle"></i> Ammonia (mg/L)
+                            </label>
+                            <input type="number" step="0.01" id="ammonia" name="ammonia" placeholder="e.g. 0.05" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="submit-btn">
+                        <span class="btn-text">Analyze Quality</span>
+                        <i class="ph ph-arrow-right btn-icon"></i>
+                        <div class="spinner class-hidden" id="spinner"></div>
+                    </button>
+                </form>
+
+                <div class="result-container" id="result-container">
+                    <!-- Result will be injected here via JS -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
