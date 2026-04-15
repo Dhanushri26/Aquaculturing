@@ -133,27 +133,24 @@ def format_probabilities(probabilities):
     return probability_map
 
 
-def get_rule_based_alerts(input_data):
-    row = input_data.iloc[0]
+def get_model_alerts(probabilities):
     alerts = []
+    sorted_probs = sorted((float(value) for value in probabilities), reverse=True)
+    top_probability = sorted_probs[0]
+    second_probability = sorted_probs[1] if len(sorted_probs) > 1 else 0.0
+    confidence_margin = top_probability - second_probability
 
-    if row["dissolved_oxygen"] < 4.0 and row["temperature"] > 28.0:
-        alerts.append("Low dissolved oxygen combined with high temperature is a known stress pattern.")
-    if row["ammonia"] > 1.2 and row["ph"] > 8.0:
-        alerts.append("High ammonia combined with elevated pH can quickly become dangerous.")
-    if row["dissolved_oxygen"] < 3.0:
-        alerts.append("Dissolved oxygen is critically low.")
-    if row["ammonia"] > 1.0:
-        alerts.append("Ammonia is approaching a dangerous level.")
+    if top_probability < 0.70:
+        alerts.append("Prediction confidence is moderate. Consider rechecking sensor readings.")
+    if confidence_margin < 0.15:
+        alerts.append("Top classes are close. The result may be sensitive to small input changes.")
 
     return alerts
 
 
-def get_response_status(predicted_label, confidence, warnings, rule_alerts):
+def get_response_status(predicted_label, confidence, warnings):
     if predicted_label == "High":
         return "critical"
-    if rule_alerts:
-        return "watch"
     if warnings or confidence < 0.70:
         return "caution"
     if predicted_label == "Medium":
@@ -190,7 +187,7 @@ def predict():
         predicted_label = label_encoder.inverse_transform(prediction)[0]
         confidence = float(probabilities.max())
         warnings = get_input_warnings(input_data)
-        rule_alerts = get_rule_based_alerts(input_data)
+        model_alerts = get_model_alerts(probabilities)
 
         return jsonify(
             {
@@ -200,8 +197,8 @@ def predict():
                 "probabilities": format_probabilities(probabilities),
                 "suggestion": get_suggestion(predicted_label, confidence),
                 "warnings": warnings,
-                "rule_alerts": rule_alerts,
-                "status": get_response_status(predicted_label, confidence, warnings, rule_alerts),
+                "model_alerts": model_alerts,
+                "status": get_response_status(predicted_label, confidence, warnings),
                 "top_factors": get_top_factors(),
                 "selected_model": training_report.get("selected_model"),
             }
