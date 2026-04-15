@@ -48,7 +48,7 @@ function displayResult(result) {
         : 'N/A';
     const topFactors = Array.isArray(result.top_factors) ? result.top_factors : [];
     const warnings = Array.isArray(result.warnings) ? result.warnings : [];
-    const ruleAlerts = Array.isArray(result.rule_alerts) ? result.rule_alerts : [];
+    const modelAlerts = Array.isArray(result.model_alerts) ? result.model_alerts : [];
     const probabilities = result.probabilities || {};
     const suggestion = result.suggestion || '';
     const resultContainer = document.getElementById('result-container');
@@ -102,8 +102,8 @@ function displayResult(result) {
         ? `<div class="warning-box"><strong>Input warnings:</strong><br>${warnings.join('<br>')}</div>`
         : '';
 
-    const alertMarkup = ruleAlerts.length
-        ? `<div class="alert-box"><strong>Critical signals:</strong><br>${ruleAlerts.join('<br>')}</div>`
+    const alertMarkup = modelAlerts.length
+        ? `<div class="alert-box"><strong>Model alerts:</strong><br>${modelAlerts.join('<br>')}</div>`
         : '';
 
     resultContainer.innerHTML = `

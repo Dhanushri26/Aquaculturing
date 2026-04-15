@@ -66,7 +66,7 @@ def main():
         print(f"Confidence: {result.get('confidence')}")
         print(f"Status: {result.get('status')}")
         print(f"Suggestion: {result.get('suggestion')}")
-        print(f"Rule alerts: {result.get('rule_alerts')}")
+        print(f"Model alerts: {result.get('model_alerts')}")
         print(f"Warnings: {result.get('warnings')}")
         print(f"Probabilities: {result.get('probabilities')}")
 
