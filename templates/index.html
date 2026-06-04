@@ -11,23 +11,22 @@
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 <body>
-    <div class="background-animation">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-        <div class="blob blob-3"></div>
-    </div>
-
     <main class="container">
-        <div class="glass-panel main-panel">
+        <div class="main-panel">
             <header class="header">
                 <div class="logo">
                     <i class="ph-fill ph-drop"></i>
                     <h1>AquaCast</h1>
                 </div>
                 <p class="subtitle">Intelligent Water Quality Risk Prediction for Aquaculture</p>
+                <nav class="page-nav" aria-label="Primary">
+                    <a href="#input-section">Input</a>
+                    <a href="#result-section">Result</a>
+                </nav>
             </header>
 
-            <div class="content">
+            <div class="content" id="input-section">
+                <p class="section-heading">Water Parameters</p>
                 <form id="prediction-form" class="prediction-form">
                     <div class="grid-layout">
                         <div class="input-group">
@@ -66,7 +65,10 @@
                     </button>
                 </form>
 
-                <div class="result-container" id="result-container"></div>
+                <section class="result-section" id="result-section">
+                    <p class="section-heading">Prediction Output</p>
+                    <div class="result-container" id="result-container"></div>
+                </section>
             </div>
         </div>
     </main>
