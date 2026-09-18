@@ -87,60 +87,20 @@ def get_rule_based_alerts(sample):
     return alerts
 
 
-# while True:
-#     temperature, dissolved_oxygen, ph, ammonia = generate_data()
+while True:
+    temperature, dissolved_oxygen, ph, ammonia = generate_data()
 
-#     sample = pd.DataFrame(
-#         [
-#             {
-#                 "temperature": temperature,
-#                 "dissolved_oxygen": dissolved_oxygen,
-#                 "ph": ph,
-#                 "ammonia": ammonia,
-#             }
-#         ]
-#     )[FEATURE_COLUMNS]
+    sample = pd.DataFrame(
+        [
+            {
+                "temperature": temperature,
+                "dissolved_oxygen": dissolved_oxygen,
+                "ph": ph,
+                "ammonia": ammonia,
+            }
+        ]
+    )[FEATURE_COLUMNS]
 
-#     sample_scaled = scaler.transform(sample)
-#     prediction = model.predict(sample_scaled)
-#     probabilities = model.predict_proba(sample_scaled)[0]
-
-#     risk = label_encoder.inverse_transform(prediction)[0]
-#     confidence = float(np.max(probabilities))
-#     top_factors = get_top_factors()
-#     warnings = get_input_warnings(sample)
-#     rule_alerts = get_rule_based_alerts(sample)
-
-#     print("\n--- Real-Time Aquaculture Monitor ---")
-#     print(
-#         "Temp: "
-#         f"{temperature:.2f} C | "
-#         f"DO: {dissolved_oxygen:.2f} | "
-#         f"pH: {ph:.2f} | "
-#         f"NH3: {ammonia:.2f}"
-#     )
-#     print(f"Risk Level: {risk}")
-#     print(f"Confidence: {confidence:.2%}")
-#     print(get_suggestion(risk))
-#     if warnings:
-#         print("Warnings: " + "; ".join(warnings))
-#     if rule_alerts:
-#         print("Rule alerts: " + "; ".join(rule_alerts))
-#     if top_factors:
-#         print(
-#             "Top model factors: "
-#             + ", ".join(
-#                 f"{item['feature']} ({item['importance']:.3f})" for item in top_factors
-#             )
-#         )
-
-#     time.sleep(2)
-
-
-# def find (ab):
-#     print("found",ab)
-
-def predict(sample):
     sample_scaled = scaler.transform(sample)
     prediction = model.predict(sample_scaled)
     probabilities = model.predict_proba(sample_scaled)[0]
@@ -151,11 +111,32 @@ def predict(sample):
     warnings = get_input_warnings(sample)
     rule_alerts = get_rule_based_alerts(sample)
 
-    return {
-        "risk": risk,
-        "confidence": confidence,
-        "suggestion": get_suggestion(risk),
-        "warnings": warnings,
-        "rule_alerts": rule_alerts,
-        "top_factors": top_factors,
-    }
+    print("\n--- Real-Time Aquaculture Monitor ---")
+    print(
+        "Temp: "
+        f"{temperature:.2f} C | "
+        f"DO: {dissolved_oxygen:.2f} | "
+        f"pH: {ph:.2f} | "
+        f"NH3: {ammonia:.2f}"
+    )
+    print(f"Risk Level: {risk}")
+    print(f"Confidence: {confidence:.2%}")
+    print(get_suggestion(risk))
+    if warnings:
+        print("Warnings: " + "; ".join(warnings))
+    if rule_alerts:
+        print("Rule alerts: " + "; ".join(rule_alerts))
+    if top_factors:
+        print(
+            "Top model factors: "
+            + ", ".join(
+                f"{item['feature']} ({item['importance']:.3f})" for item in top_factors
+            )
+        )
+
+    time.sleep(2)
+
+
+def find (ab):
+    print("found",ab)
+
