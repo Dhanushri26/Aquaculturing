@@ -6,6 +6,7 @@ import joblib
 import numpy as np
 import pandas as pd
 
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 MODELS_DIR = os.path.join(BASE_DIR, "models")
 
@@ -40,7 +41,7 @@ def get_suggestion(risk):
     if risk == "High":
         return "Immediate action: increase aeration and reduce feeding."
     if risk == "Medium":
-        return "Monitor closely and adjust water conditions."
+        return "Monitor adjust water conditions."
     return "Conditions look stable."
 
 
@@ -134,3 +135,7 @@ while True:
         )
 
     time.sleep(2)
+
+
+def add(a,b):
+    return a+b
